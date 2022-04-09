@@ -68,8 +68,6 @@ async function run() {
                res.json(room);
           });
 
-
-
           //get specific data based on id
           app.get('/rooms/:id', async (req, res) => {
                const id = req.params.id;
@@ -78,6 +76,22 @@ async function run() {
 
                res.json(room);
           });
+
+
+
+
+
+
+          //delete api
+          app.delete('/rooms/:id', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const result = await roomCollection.deleteOne(query);
+
+               res.json(result);
+          })
+
+
 
 
 
