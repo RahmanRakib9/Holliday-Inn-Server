@@ -4,7 +4,8 @@ const port = 5000;
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const fileUpload = require('express-fileupload')
+const fileUpload = require('express-fileupload');
+const ObjectId = require('mongodb').ObjectId;
 
 //access environment file
 require('dotenv').config();
@@ -34,6 +35,7 @@ async function run() {
           const database = client.db('holidayInn');
           const roomCollection = database.collection('rooms');
 
+          //post data into db
           app.post('/rooms', async (req, res) => {
                const roomTitle = req.body.roomTitle;
                const bedCapacity = req.body.bedCapacity;
@@ -57,6 +59,27 @@ async function run() {
 
                res.json(result)
           });
+
+          //get all data from db
+          app.get('/rooms', async (req, res) => {
+               const cursor = roomCollection.find({});
+               const room = await cursor.toArray();
+
+               res.json(room);
+          });
+
+
+
+          //get specific data based on id
+          app.get('/rooms/:id', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const room = await roomCollection.findOne(query);
+
+               res.json(room);
+          });
+
+
 
 
 
