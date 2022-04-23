@@ -77,11 +77,6 @@ async function run() {
                res.json(room);
           });
 
-
-
-
-
-
           //delete api
           app.delete('/rooms/:id', async (req, res) => {
                const id = req.params.id;
@@ -89,10 +84,17 @@ async function run() {
                const result = await roomCollection.deleteOne(query);
 
                res.json(result);
+          });
+
+
+          //get shipment data based on id
+          app.get('/shipment/:id', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const shipment = await roomCollection.findOne(query);
+
+               res.json(shipment);
           })
-
-
-
 
 
 
