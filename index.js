@@ -24,8 +24,6 @@ app.get('/', (req, res) => {
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tjr1x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-
-
 async function run() {
 
      try {
@@ -34,8 +32,9 @@ async function run() {
 
           const database = client.db('holidayInn');
           const roomCollection = database.collection('rooms');
+          const userCollection = database.collection('users');
 
-          //post data into db
+          //post room data into db
           app.post('/rooms', async (req, res) => {
                const roomTitle = req.body.roomTitle;
                const bedCapacity = req.body.bedCapacity;
@@ -60,7 +59,7 @@ async function run() {
                res.json(result)
           });
 
-          //get all data from db
+          //get all room data from db
           app.get('/rooms', async (req, res) => {
                const cursor = roomCollection.find({});
                const room = await cursor.toArray();
@@ -68,7 +67,7 @@ async function run() {
                res.json(room);
           });
 
-          //get specific data based on id
+          //get specific room data based on id
           app.get('/rooms/:id', async (req, res) => {
                const id = req.params.id;
                const query = { _id: ObjectId(id) };
@@ -77,7 +76,7 @@ async function run() {
                res.json(room);
           });
 
-          //delete api
+          //delete api (room data)
           app.delete('/rooms/:id', async (req, res) => {
                const id = req.params.id;
                const query = { _id: ObjectId(id) };
@@ -86,7 +85,6 @@ async function run() {
                res.json(result);
           });
 
-
           //get shipment data based on id
           app.get('/shipment/:id', async (req, res) => {
                const id = req.params.id;
@@ -94,6 +92,18 @@ async function run() {
                const shipment = await roomCollection.findOne(query);
 
                res.json(shipment);
+          });
+
+
+
+
+          //post user data into db
+          app.post('/users', async (req, res) => {
+               const bookingData = req.body;
+               const result = await userCollection.insertOne(bookingData);
+               console.log(result);
+               res.json(result);
+
           })
 
 
