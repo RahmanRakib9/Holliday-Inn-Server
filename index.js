@@ -94,17 +94,23 @@ async function run() {
                res.json(shipment);
           });
 
-
-
-
           //post user data into db
           app.post('/users', async (req, res) => {
                const bookingData = req.body;
                const result = await userCollection.insertOne(bookingData);
                console.log(result);
-               res.json(result);
 
-          })
+               res.json(result);
+          });
+
+          //get specific user based on id
+          app.get('/shipment/:id/billing', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const billing = await roomCollection.findOne(query);
+
+               res.json(billing);
+          });
 
 
 
