@@ -6,6 +6,8 @@ const cors = require('cors')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const fileUpload = require('express-fileupload');
 const ObjectId = require('mongodb').ObjectId;
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
+
 
 //access environment file
 require('dotenv').config();
@@ -85,14 +87,27 @@ async function run() {
                res.json(result);
           });
 
-          //get shipment data based on id
-          app.get('/shipment/:id', async (req, res) => {
+          //get checkout data based on id
+          app.get('/rooms/:id/checkout', async (req, res) => {
                const id = req.params.id;
                const query = { _id: ObjectId(id) };
-               const shipment = await roomCollection.findOne(query);
+               const room = await roomCollection.findOne(query);
 
-               res.json(shipment);
+               res.json(room);
           });
+
+
+
+          //get billing data based on id
+          app.get('/rooms/:id/checkout/billing', async (req, res) => {
+               const id = req.params.id;
+               const query = { _id: ObjectId(id) };
+               const room = await roomCollection.findOne(query);
+
+               res.json(room);
+          });
+
+
 
           //post user data into db
           app.post('/users', async (req, res) => {
@@ -104,13 +119,30 @@ async function run() {
           });
 
           //get specific user based on id
-          app.get('/shipment/:id/billing', async (req, res) => {
-               const id = req.params.id;
-               const query = { _id: ObjectId(id) };
-               const billing = await roomCollection.findOne(query);
+          // app.get('/shipment/:id/billing', async (req, res) => {
+          //      const id = req.params.id;
+          //      const query = { _id: ObjectId(id) };
+          //      const billing = await roomCollection.findOne(query);
 
-               res.json(billing);
-          });
+          //      res.json(billing);
+          // });
+
+
+
+          // app.post('/create-payment-intent', async (req, res) => {
+          //      const paymentInfo = req.body;
+          //      const amount = paymentInfo.price * 100;
+          //      const paymentIntent = await stripe.paymentIntents.create({
+          //           currency: 'eur',
+          //           amount: amount,
+          //           automatic_payment_methods: {
+          //                enabled: true,
+          //           },
+          //      });
+          //      res.json({
+          //           clientSecret: paymentIntent.client_secret,
+          //      })
+          // })
 
 
 
